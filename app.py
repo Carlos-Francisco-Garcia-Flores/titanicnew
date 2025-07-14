@@ -25,20 +25,14 @@ def predict():
         sex = int(request.form['sex'])           
         pclass = int(request.form['pclass'])
         embarked = int(request.form['embarked'])
-        Title = 0
-        SibSp = 1
+
         # Crear DataFrame con los datos
         input_df = pd.DataFrame([{
             'Age': age,
             'Fare': fare,
             'Sex': sex,
             'Pclass': pclass,
-            'Embarked': embarked,
-            'Title': Title,
-            'SibSp': SibSp,
-
-
-
+            'Embarked': embarked
         }])
         app.logger.debug(f"Input recibido: \n{input_df}")
 
