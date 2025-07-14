@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción Titanic</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #181818, #284a55, #0a0a0a); 
+
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            max-width: 420px;
+            width: 90%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1976d2;
+            color: #fff;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1565c0;
+        }
+
+        #resultado {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .text-success {
+            color: #2e7d32;
+        }
+
+        .text-danger {
+            color: #c62828;
+        }
+    </style>
+
+    <script>
+        function predecirSupervivencia(event) {
+            event.preventDefault();
+
+            const age = document.getElementById('age').value;
+            const fare = document.getElementById('fare').value;
+            const sex = document.getElementById('sex').value;
+            const pclass = document.getElementById('pclass').value;
+            const embarked = document.getElementById('embarked').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `age=${age}&fare=${fare}&sex=${sex}&pclass=${pclass}&embarked=${embarked}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultado = document.getElementById('resultado');
+                if (data.error) {
+                    resultado.innerText = 'Error: ' + data.error;
+                    resultado.className = "text-danger";
+                } else {
+                    resultado.innerText = data.sobrevive
+                        ? '✅ ¡El pasajero sobreviviría!'
+                        : '❌ El pasajero no sobreviviría.';
+                    resultado.className = data.sobrevive ? "text-success" : "text-danger";
+                }
+            })
+            .catch(error => {
+                document.getElementById('resultado').innerText = 'Error en la solicitud';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Predicción de Supervivencia en el Titanic</h2>
+        <form id="formulario" onsubmit="predecirSupervivencia(event)">
+            <label for="age">Edad:</label>
+            <input type="number" step="any" id="age" name="age" required>
+
+            <label for="fare">Tarifa (Fare):</label>
+            <input type="number" step="any" id="fare" name="fare" required>
+
+            <label for="sex">Sexo:</label>
+            <select id="sex" name="sex" required>
+                <option value="male">Hombre</option>
+                <option value="female">Mujer</option>
+            </select>
+
+            <label for="pclass">Clase (1, 2, 3):</label>
+            <select id="pclass" name="pclass" required>
+                <option value="1">Primera</option>
+                <option value="2">Segunda</option>
+                <option value="3">Tercera</option>
+            </select>
+
+            <label for="embarked">Puerto de embarque:</label>
+            <select id="embarked" name="embarked" required>
+                <option value="S">Southampton</option>
+                <option value="C">Cherbourg</option>
+                <option value="Q">Queenstown</option>
+            </select>
+
+            <button type="submit">Predecir</button>
+        </form>
+        <p id="resultado"></p>
+    </div>
+</body>
+</html>
