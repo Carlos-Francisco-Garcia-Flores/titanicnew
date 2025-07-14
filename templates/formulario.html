@@ -79,11 +79,11 @@
         }
 
         .text-success {
-            color: #ff0000;
+            color: #09ff00;
         }
 
         .text-danger {
-            color: #55ff00;
+            color: #ff2200;
         }
     </style>
 
@@ -114,7 +114,7 @@
                     resultado.innerText = data.sobrevive
                         ? '❌ ¡El pasajero no sobreviviría!'
                         : '✅ El pasajero sobreviviría.';
-                    resultado.className = data.sobrevive ? "text-danger" : "text-success";
+                    resultado.className = data.sobrevive ? "text-success" : "text-danger";
                 }
             })
             .catch(error => {
